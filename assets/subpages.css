@@ -1,0 +1,11 @@
+:root{--paper:#F6F0E4;--paper2:#EDE4D3;--ink:#1F1A17;--soft:#5A514A;--red:#A63D2A;--green:#3F6B4A;--mango:#F2B134}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 "Familjen Grotesk",Arial,sans-serif}
+a{color:inherit}.site-header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem max(4vw,calc((100vw - 1100px)/2));border-bottom:1px solid #d8cebd;position:sticky;top:0;background:#f6f0e4f2;backdrop-filter:blur(8px);z-index:5}
+.brand{text-decoration:none;font:600 1.35rem Georgia,serif}.brand span{display:block;font:600 .65rem Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--soft)}
+nav{display:flex;gap:1.2rem;flex-wrap:wrap}nav a{text-decoration:none;font-size:.92rem}
+.container{width:min(900px,90vw);margin:0 auto;padding:2.5rem 0 5rem}.crumb{font-size:.85rem;color:var(--soft)}.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:700;font-size:.78rem;margin-top:2.5rem}
+h1,h2{font-family:Georgia,serif;font-weight:400;line-height:1.08;letter-spacing:-.025em}h1{font-size:clamp(2.7rem,7vw,5rem);margin:.7rem 0 1rem}h2{font-size:clamp(1.8rem,4vw,2.6rem);margin:0 0 .8rem}
+.lead{font-size:1.2rem;color:var(--soft);max-width:70ch}.cta-row{display:flex;flex-wrap:wrap;gap:.8rem;margin:2rem 0 3rem}
+.button{display:inline-block;text-decoration:none;padding:.85rem 1.2rem;border:2px solid var(--ink);border-radius:99px;background:var(--ink);color:var(--paper);font-weight:700}.button.secondary{background:transparent;color:var(--ink)}
+section{padding:1.5rem 0;border-top:1px solid #d8cebd}section p,section li{max-width:78ch}ul,ol{padding-left:1.4rem}.callout{background:var(--paper2);border:1px solid #d8cebd;border-radius:12px;padding:1.5rem;margin-top:2rem}.site-footer{padding:2rem 5vw;background:var(--ink);color:var(--paper);text-align:center;font-size:.9rem}
+@media(max-width:650px){.site-header{align-items:flex-start;flex-direction:column}nav{gap:.8rem}.container{padding-top:1.5rem}}

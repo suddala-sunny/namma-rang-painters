@@ -211,6 +211,14 @@
   .est-result { margin-top: 1.8rem; padding-top: 1.5rem; border-top: 2px dashed var(--ink); display: flex; justify-content: space-between; align-items: end; gap: 1rem; flex-wrap: wrap; }
   .est-result .amount { font-family: var(--display); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 500; line-height: 1; }
   .est-result small { display: block; color: var(--ink-soft); font-size: .8rem; margin-top: .4rem; }
+  .paint-guide { margin-top: 1.35rem; padding: 1.25rem; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--paper-2); }
+  .paint-guide h3 { font-family: var(--display); font-size: 1.45rem; line-height: 1.2; margin-bottom: .45rem; }
+  .paint-guide p { color: var(--ink-soft); font-size: .95rem; margin-bottom: .65rem; }
+  .paint-guide ul { padding-left: 1.2rem; margin: .35rem 0 .75rem; }
+  .paint-guide li { margin: .2rem 0; font-size: .93rem; }
+  .paint-guide .guide-label { display: inline-block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; margin-bottom: .4rem; color: var(--laterite); }
+  .paint-guide .guide-note { border-top: 1px dashed var(--ink); padding-top: .7rem; margin-top: .7rem; font-size: .83rem; }
+  .paint-confirm { display: block; margin-top: .8rem; font-size: .88rem; color: var(--ink-soft); }
 
   /* ---------- AREAS ---------- */
   .areas-wrap { display: grid; grid-template-columns: 1fr 1.6fr; gap: 4rem; }
@@ -543,7 +551,17 @@
         </div>
         <a href="#contact" class="btn btn-solid" id="estCta">Request site quote →</a>
       </div>
-      <p class="form-note">Rates are per sq ft of paintable wall/ceiling surface, not carpet area. Labour-only excludes paint and consumables. Package rates include standard paint, primer and labour for the stated scope; fresh putty, crack repairs, scaffolding, woodwork and specialist waterproofing systems are quoted separately. GST extra if applicable.</p>
+      <div class="paint-guide" id="paintGuide" aria-live="polite">
+        <span class="guide-label">Paint selection helper</span>
+        <h3 id="paintGuideTitle">Premium interior paint</h3>
+        <p id="paintGuideIntro">A balanced option for everyday family living, with a better finish and easier routine cleaning than basic economy ranges.</p>
+        <strong>Example product ranges to discuss</strong>
+        <ul id="paintGuideProducts"></ul>
+        <p id="paintGuideBestFor"></p>
+        <p class="guide-note" id="paintGuideNote">The examples are starting points, not an automatic brand commitment. We will confirm the exact product, finish, coats and pack size in your written quotation.</p>
+      </div>
+      <span class="paint-confirm">Not sure? Choose the option closest to your budget. Our team can explain sample options during the site assessment before you confirm.</span>
+      <p class="form-note">Rates are per sq ft of estimated paintable wall/ceiling surface, not carpet area. Labour-only excludes paint and consumables. Package estimates include the selected quality tier's assumed paint, primer and labour for the stated scope; fresh putty, crack repairs, scaffolding, woodwork and specialist waterproofing systems are quoted separately. GST extra if applicable. Final price and product are confirmed after site measurement and surface inspection.</p>
     </div>
   </div>
 </section>
@@ -730,6 +748,31 @@
   };
   const areaEl = document.getElementById("area");
   const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+  const PAINT_GUIDE = {
+    interior: [
+      { title: "Economy interior paint", intro: "A practical, budget-conscious choice for rental homes, basic refreshes and rooms where keeping the initial spend low matters most.", products: ["Asian Paints Tractor Emulsion / Tractor Sparc", "Berger Bison range (confirm the suitable emulsion variant)", "Nerolac Popular range (confirm the suitable interior variant)"], best: "Good starting point for: budget repainting and lower-traffic rooms. Ask us to confirm washability and finish for the exact variant." },
+      { title: "Premium interior paint", intro: "A balanced everyday-home option when you want a better finish and more convenient routine cleaning than a basic budget range.", products: ["Asian Paints Apcolite Advanced / Apcolite All Protek", "Berger Easy Clean range (confirm the exact variant)", "Nerolac Premium interior range (confirm the exact variant)"], best: "Good starting point for: living rooms, bedrooms, family homes and spaces that need regular wipe-clean maintenance." },
+      { title: "Luxury interior paint", intro: "A higher-end option for customers who prioritise refined finishes, sheen choices and enhanced surface performance. The exact benefit depends on the product variant.", products: ["Asian Paints Royale range", "Berger Silk range", "Nerolac Impressions range", "Dulux Velvet Touch range"], best: "Good starting point for: premium apartments, villas, feature spaces and customers seeking a more elevated finish." }
+    ],
+    exterior: [
+      { title: "Economy exterior paint", intro: "A cost-conscious exterior emulsion option for a basic weather-facing repaint, provided the wall is sound and properly prepared.", products: ["Asian Paints Ace exterior range", "Ask us to compare an equivalent economy exterior emulsion from Berger, Nerolac or Dulux"], best: "Good starting point for: budget-led exterior refreshes. Existing dampness, cracks and algae must be assessed separately." },
+      { title: "Premium exterior paint", intro: "A step-up exterior option for homes seeking a balance of weather protection, appearance and maintenance needs.", products: ["Asian Paints Apex exterior range", "Ask us to compare an equivalent premium WeatherCoat / Excel / Weathershield variant"], best: "Good starting point for: regular independent houses and apartment exteriors where surface condition and exposure are suitable." },
+      { title: "Luxury exterior paint", intro: "A higher-performance exterior range for customers prioritising enhanced weathering, dust or algae resistance features available in the chosen product.", products: ["Asian Paints Apex Ultima / Ultima range", "Ask us to compare an equivalent high-performance exterior variant from Berger, Nerolac or Dulux"], best: "Good starting point for: premium homes and exposed elevations. Select the exact system after checking cracks, dampness and substrate." }
+    ]
+  };
+  const tierNames = ["Economy", "Premium", "Luxury"];
+  function updatePaintGuide(job, tier) {
+    const selectedJobs = job === "both" ? ["interior", "exterior"] : [job];
+    const entries = selectedJobs.map(kind => ({kind, ...PAINT_GUIDE[kind][tier]}));
+    document.getElementById("paintGuideTitle").textContent = entries.length === 2
+      ? `${tierNames[tier]} paint: interior + exterior`
+      : entries[0].title;
+    document.getElementById("paintGuideIntro").textContent = entries.map(e => e.intro).join(" ");
+    const products = document.getElementById("paintGuideProducts");
+    products.innerHTML = entries.map(e => `<li><strong>${e.kind === "interior" ? "Interior" : "Exterior"}:</strong> ${e.products.join("; ")}</li>`).join("");
+    document.getElementById("paintGuideBestFor").textContent = entries.map(e => e.best).join(" ");
+    document.getElementById("paintGuideNote").textContent = "Brand and range examples are indicative, not a promise of stock or identical performance across brands. Exact product code, finish, coats, primer, coverage, warranty conditions and price will be confirmed in the written quotation. Product availability and specifications can change.";
+  }
   function estimate() {
     const carpet = +areaEl.value;
     const job = document.querySelector("input[name=job]:checked").value;
@@ -746,8 +789,18 @@
       pricing === "labour"
         ? "Indicative labour-only range; materials, putty and major repairs extra"
         : "Indicative material + labour range; GST extra if applicable";
+    updatePaintGuide(job, tier);
   }
   document.querySelectorAll("#estimate input").forEach(el => el.addEventListener("input", estimate));
+  document.getElementById("estCta").addEventListener("click", () => {
+    const job = document.querySelector("input[name=job]:checked").value;
+    const tier = +document.querySelector("input[name=tier]:checked").value;
+    const pricing = document.querySelector("input[name=pricing]:checked").value;
+    const carpet = +areaEl.value;
+    const summary = `Website estimate selection:\nJob: ${job}\nPricing: ${pricing === "labour" ? "Labour only" : "Material + labour"}\nPaint quality: ${tierNames[tier]}\nCarpet area: ${carpet.toLocaleString("en-IN")} sq ft\nIndicative estimate: ${document.getElementById("estAmount").textContent}\nPlease confirm suitable brand, exact product, surface preparation, inclusions and final quote after site assessment.`;
+    const msg = document.getElementById("msg");
+    msg.value = msg.value.trim() ? `${msg.value.trim()}\n\n${summary}` : summary;
+  });
   estimate();
 
   // ---- Lead form -> WhatsApp ----

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://suddala-sunny.github.io/namma-rang-painters/sitemap.xml
